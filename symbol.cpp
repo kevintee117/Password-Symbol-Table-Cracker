@@ -3,6 +3,8 @@
 #include <iostream>
 #include <string>
 #include <map>
+#include <vector>
+
 #include "key.hpp"
 #include "symbol.hpp"
 
@@ -25,7 +27,8 @@ Symbol::Symbol(const std::string& filename) {
 }
 
 void Symbol::decrypt(const std::string& encrypted) {
-	std::map<Key, Key> mainMap;
+	//std::map<Key, Key> mainMap;
+	std::map<Key, std::vector<std::string>> mainMap;
 	std::string main(C,'a');
 	std::string adder = main;
 	int half = C/2;
@@ -37,13 +40,24 @@ void Symbol::decrypt(const std::string& encrypted) {
 	adder[half-1] = 'b';
 	Key a1d(adder);
 	Key base(main);
-	long long numIterations = std::pow(32,half);
+	unsigned long long numIterations = std::pow(32,half);
+	// unsigned long long numIterations = std::pow(2,(5*half));
 	//adding firsthalf of all possible entries
-	for(long long i = 0; i < numIterations; i++) {
+	for(int i = 0; i < numIterations; i++) {
 		Key encrypt = base.subset_sum(T,false);
 		//std::cout << "encrypted is " << encrypt.get_string() << "\n";
-
-		mainMap[encrypt] = base;
+		auto ita = mainMap.find(encrypt); // tag
+		if(ita != mainMap.end()) {
+			// mainMap[encrypt].push_back(base.get_string());
+			ita->second.push_back(base.get_string());
+		} else {
+			std::vector<std::string> mapVector;
+			mapVector.push_back(base.get_string());
+			std::pair<Key, std::vector<std::string>> pa(base, mapVector);
+			mainMap.insert(pa);
+			//mainMap[encrypt] = mapVector;
+		}
+		//mainMap[encrypt] = base;
 		  //std::cout << "encrypted value is "<< base.get_string() << "\n";
 		  //std::cout << "Regular value is " << base.subset_sum(T, false).get_string() << "\n";
 		  //std::cout << "adder is " << a1d.get_string() << "\n";
@@ -53,51 +67,71 @@ void Symbol::decrypt(const std::string& encrypted) {
 			base += a1d;
 		}
 	}
-	std::string addTwo = main;
-	addTwo[C-1] = 'b';
-	
+	/*end of the first loop
+	*
+	*
+	*/
 	//test to see if there is a value at every key
-	//auto ip = mainMap.begin();
+	// auto ip = mainMap.begin();
 	// while(ip != mainMap.end()) {
-	// 	ip->second.showString();
+	// 	for(int i = 0; i < ip->second.size(); i++) {
+	// 		std::cout << ip->second[i] <<"\n";
+	// 	}
 	// 	ip++;
 	// }
-	
+	std::string addTwo = main;
+	addTwo[C-1] = 'b';
 	//may need to fix
 	if(odd) {
 		half++;
 	}
-	long long numIterationsTwo = std::pow(32,half);
+	unsigned long long numIterationsTwo = std::pow(32,half);
+	// unsigned long long numIterationsTwo = std::pow(2,(5*(C-half)));
 	//end potential fix
 	
 	//std::cout << "Base is " << base.get_string() << "\n";
 	Key originalMod(encrypted);
 	Key original(encrypted);
-	Key baseTwo = base;
-	//Key baseTwo(main);
+	//Key baseTwo = base;
+	Key baseTwo(main);
 
+	//baseTwo.showString();
 	Key a2d(addTwo);
 	//std::cout << "a2d is " << a2d.get_string() << "\n"; 
-	for(long long j = 0; j < numIterationsTwo; j++) {
+	for(int j = 0; j < numIterationsTwo; j++) {
+		//baseTwo.showString();
 		if(j != numIterations -1) {
 			baseTwo += a2d;
 		}	
-		Key encrypt = baseTwo.subset_sum(T, false);
-		//std::cout << "BaseTwo is " << baseTwo.get_string() << "\n";
+		originalMod = original;
+		//originalMod.showString();
+		//std::cout << "a2d is " << a2d.get_string() << "\n"; 
+		// Key encrypt = baseTwo.subset_sum(T, false);
+		originalMod -= baseTwo.subset_sum(T, false);
+		//std::cout << "Base is " << baseTwo.get_string() << "\n";
 		// originalMod -= baseTwo;
-		originalMod -= encrypt;
+		// originalMod -= encrypt;
 
-		//std::cout << "original is " << originalMod.get_string() << "\n";
+		//std::cout << "target is " << originalMod.get_string() << "\n";
 
 		auto it = mainMap.find(originalMod);
+		//it->first.showString();
 		//it->second.showString();
 		//mainMap[originalMod].showString();
 		if(it != mainMap.end()) {
 			std::cout << "hit" << "\n";
-			mainMap[originalMod].get_string();
+			//it->second.showString();
+			for(int k = 0; k < it->second.size(); k++ ) {
+				// originalMod.set_string(it->second[k]); 
+				// originalMod += baseTwo;
+				// originalMod.showString();
+				std::string firstHalf = it->second[k].substr(0,half);
+				std::string secondHalf = baseTwo.get_string().substr(half);
+				std::cout << firstHalf + secondHalf << "\n";
+			}
 		}
-		//originalMod = original;
-		
+	//baseTwo.showString();
+	//break;	
 	}
 
 
@@ -221,8 +255,8 @@ int main(int argc, char *argv[]){
 	
 	initialize(argc, argv);
 	clock_t start = (double) clock();
-	Symbol s(table_filename);
-	s.decrypt(encrypted);
+	Symbol *s = new Symbol(table_filename);
+	s->decrypt(encrypted);
 	clock_t end = (double) clock();
     double time = (double) (end-start)/CLOCKS_PER_SEC;
 	std::cout<<"Symbol Table took "<< time << " seconds"<< std::endl;
