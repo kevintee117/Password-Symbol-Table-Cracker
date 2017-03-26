@@ -29,18 +29,78 @@ void Symbol::decrypt(const std::string& encrypted) {
 	std::string main(C,'a');
 	std::string adder = main;
 	int half = C/2;
+	bool odd = false;
 	if(C % 2 == 1) {
-		half++;
+		odd = true;
+		//half++;
 	}
 	adder[half-1] = 'b';
+	Key a1d(adder);
 	Key base(main);
-	long long numIterations = std::pow(32,C/2);
+	long long numIterations = std::pow(32,half);
+	//adding firsthalf of all possible entries
 	for(long long i = 0; i < numIterations; i++) {
-		mainMap[base.subset_sum(T,false)] = base;
-		// std::cout << "encrypted value is "<< base.get_string() << "\n";
-		// std::cout << "Regular value is " << base.subset_sum(T, false).get_string() << "\n";
-		base += adder;
+		Key encrypt = base.subset_sum(T,false);
+		//std::cout << "encrypted is " << encrypt.get_string() << "\n";
+
+		mainMap[encrypt] = base;
+		  //std::cout << "encrypted value is "<< base.get_string() << "\n";
+		  //std::cout << "Regular value is " << base.subset_sum(T, false).get_string() << "\n";
+		  //std::cout << "adder is " << a1d.get_string() << "\n";
+		//mainMap[encrypt].showString();
+ 		//mainMap[base.subset_sum(T,false)].get_string();
+		if(i != numIterations -1) {
+			base += a1d;
+		}
 	}
+	std::string addTwo = main;
+	addTwo[C-1] = 'b';
+	
+	//test to see if there is a value at every key
+	//auto ip = mainMap.begin();
+	// while(ip != mainMap.end()) {
+	// 	ip->second.showString();
+	// 	ip++;
+	// }
+	
+	//may need to fix
+	if(odd) {
+		half++;
+	}
+	long long numIterationsTwo = std::pow(32,half);
+	//end potential fix
+	
+	//std::cout << "Base is " << base.get_string() << "\n";
+	Key originalMod(encrypted);
+	Key original(encrypted);
+	Key baseTwo = base;
+	//Key baseTwo(main);
+
+	Key a2d(addTwo);
+	//std::cout << "a2d is " << a2d.get_string() << "\n"; 
+	for(long long j = 0; j < numIterationsTwo; j++) {
+		if(j != numIterations -1) {
+			baseTwo += a2d;
+		}	
+		Key encrypt = baseTwo.subset_sum(T, false);
+		//std::cout << "BaseTwo is " << baseTwo.get_string() << "\n";
+		// originalMod -= baseTwo;
+		originalMod -= encrypt;
+
+		//std::cout << "original is " << originalMod.get_string() << "\n";
+
+		auto it = mainMap.find(originalMod);
+		//it->second.showString();
+		//mainMap[originalMod].showString();
+		if(it != mainMap.end()) {
+			std::cout << "hit" << "\n";
+			mainMap[originalMod].get_string();
+		}
+		//originalMod = original;
+		
+	}
+
+
 }
 
 	// std::map<long long,std::vector<long long>> finalMap;
@@ -165,7 +225,7 @@ int main(int argc, char *argv[]){
 	s.decrypt(encrypted);
 	clock_t end = (double) clock();
     double time = (double) (end-start)/CLOCKS_PER_SEC;
-	std::cout<< time << std::endl;
+	std::cout<<"Symbol Table took "<< time << " seconds"<< std::endl;
 	
 	return 0;
 }

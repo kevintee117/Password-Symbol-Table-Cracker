@@ -111,6 +111,8 @@ public:
 	// Assignment operators
 	Key& operator=(const Key&);
 	Key& operator+=(const Key&);
+	Key& operator-=(const Key& );
+
 
 	// Comparison operators
 	bool operator==(const Key&) const;
@@ -177,6 +179,21 @@ Key& Key::operator+=(const Key& other) {
        t = m_digit[i];	
        m_digit[i] = (t + other.m_digit[i] + carry)  % R; 
        carry      = (t + other.m_digit[i] + carry) >= R; 
+    }
+	return *this;
+}
+Key& Key::operator-=(const Key& other) {
+    int t;
+    int carry = 0;
+    for (int i = C-1; i >= 0; --i) {
+       t = m_digit[i];	
+	   m_digit[i] = (t+ ~ (other.m_digit[i] - carry) +1) %R;
+	   if(m_digit[i] < 0) {
+		   carry = -1;
+		   m_digit[i] = (m_digit[i] +32);
+	   }else {
+		   carry = 0;
+	   }
     }
 	return *this;
 }
