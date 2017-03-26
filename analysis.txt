@@ -1,9 +1,9 @@
 Char                    Brute                     Symbol
 ------------------------------------------------------------
- 4                        ?                          ?
- 5                        ?                          ?
- 6                        ?                          ?
+ 4               0 minutes 0.25343 seconds               ?
+ 5               0 minutes 10.0178 seconds                         ?
+ 6               7 minutes 21.533 seconds                          ?
  8                                                   ?
 10                                                   ?
 ------------------------------------------------------------
-Complexity                ?                          ?
+Complexity              Big theta(32^C*N)                         Big Theta(32^(C/2)+32^(C/2))

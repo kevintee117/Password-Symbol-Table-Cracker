@@ -24,6 +24,12 @@ static constexpr int N=30; // number of bits per word
 #define C_IS_SET
 
 #endif
+#ifdef USE_4_CHARS
+
+static constexpr int C=4;  // number of characters per word
+static constexpr int N=20; // number of bits per word
+#endif
+#define C_IS_SET
 
 #ifdef USE_7_CHARS
 
@@ -56,14 +62,6 @@ static constexpr int N=50; // number of bits per word
 #define C_IS_SET
 
 #endif 
-#ifdef USE_4_CHARS
-
-static constexpr int C=4;  // number of characters per word
-static constexpr int N=20; // number of bits per word
-#define C_IS_SET
-
-#endif
-
 
 #ifndef C_IS_SET 
 
@@ -71,7 +69,6 @@ static constexpr int C=5;   // number of characters per word
 static constexpr int N=25;  // number of bits per word
 
 #endif
-
 
 #define ALPHABET "abcdefghijklmnopqrstuvwxyz012345"
 typedef std::array<char, C> word_type; // fixed size word
@@ -111,13 +108,17 @@ public:
 	// Assignment operators
 	Key& operator=(const Key&);
 	Key& operator+=(const Key&);
+	Key& operator-=(const Key&);
 
 	// Comparison operators
 	bool operator==(const Key&) const;
 	bool operator<(const Key&) const;
-	
+	//returns the encrypted(or unencrypted) string?
+	std::string get_string() const;
+	word_type& get_digits() const;
 	// Print the contents of the Key (for debugging mostly)
     void show() const;
+	void showString() const;
 
 	// Assign the Key generated from the argument string to the current Key
 	void set_string(const std::string&);
@@ -125,11 +126,8 @@ public:
 	// Add subset of the integers T[i] indexed by the bits of k 
 	// and return subset sum. Do sum mod 2^N. 
     Key subset_sum(const std::vector<Key>&, bool verbose=false);
-	void showString() const;
+	//return m_digits
 	word_type getM_digits();
-	std::string get_string() const;
-	// Key longToKey(long long source);
-	 long long keyToLong();
 };
 
 inline int Key::bit(int i) const {	
@@ -162,6 +160,16 @@ inline void Key::set_string(const std::string& s) {
 	m_digit = to_string(s);
 }
 
+inline std::string Key::get_string() const {
+	std::string s(C, 'a');
+	for (int i=0; i<C; ++i) s[i] = ALPHABET[m_digit[i]];
+	return s;
+}
+
+// inline const word_type& Key::get_digits() const {
+// 	return m_digit;
+// }
+
 inline bool Key::operator==(const Key& other) const {
 	return m_digit == other.m_digit;
 }
@@ -179,6 +187,9 @@ Key& Key::operator+=(const Key& other) {
        carry      = (t + other.m_digit[i] + carry) >= R; 
     }
 	return *this;
+}
+Key& Key::operator-=(const Key& other) {
+    
 }
 
 Key Key::subset_sum(const std::vector<Key>& T, bool verbose) {
@@ -224,30 +235,6 @@ inline void Key::showString() const {
 inline word_type Key::getM_digits() {
 	return m_digit;
 }
-inline std::string Key::get_string() const {
-	std::string s(C, 'a');
-	for (int i=0; i<C; ++i) s[i] = ALPHABET[m_digit[i]];
-	return s;
-}
-inline static Key longToKey(long long source) {
-	word_type dest;
-	for(int i = C-1; i >=0; i--) {
-		dest[i] = source & 31;
-		source >>= 5;
-	}
-	Key end(dest);
-	return end;
-	
-}
-inline long long Key::keyToLong() {
-	long long dest = 0;
-	for( int i = C-1; i < m_digit.size(); i++) {
-		dest <<= 5;
-		dest += m_digit[i];
-	}
-	return dest;
-}
-
 
 
 #endif // KEY_HPP

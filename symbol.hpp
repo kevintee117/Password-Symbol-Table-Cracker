@@ -14,7 +14,8 @@ private:
 public:
 	Symbol(const std::string&);
 	void decrypt(const std::string&); 
-	std::map<Key,std::vector<std::string>> runBruteForce(int charLen);
+	void subtractKeys(long long ending, long long iterator, long long amountShift, std::map<long long,std::vector<long long>> 
+	sepMap);
 };
 
 #endif

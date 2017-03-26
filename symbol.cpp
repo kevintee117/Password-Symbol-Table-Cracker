@@ -25,53 +25,90 @@ Symbol::Symbol(const std::string& filename) {
 }
 
 void Symbol::decrypt(const std::string& encrypted) {
-	int middleIndex;
-	if(encrypted.size() %2 == 0) {
-		middleIndex = encrypted.size()/2;
-	} else {
-		middleIndex = (encrypted.size()/2) +1;
+	std::map<Key, Key> mainMap;
+	std::string main(C,'a');
+	std::string adder = main;
+	int half = C/2;
+	if(C % 2 == 1) {
+		half++;
 	}
-	//bitMiddleIndex = middleIndex*5;
-	//long encryptedBits = stringTobits(encrypted);
-	std::string firstHalf = encrypted.substr(0, middleIndex);
-	std::string secondHalf = encrypted.substr(middleIndex);
-	std::map <Key,std::vector<std::string>> topHalf = runBruteForce(firstHalf.length());
-	std::map <Key,std::vector<std::string>> bottomHalf = runBruteForce(secondHalf.length());
+	adder[half-1] = 'b';
+	Key base(main);
+	long long numIterations = std::pow(32,C/2);
+	for(long long i = 0; i < numIterations; i++) {
+		mainMap[base.subset_sum(T,false)] = base;
+		// std::cout << "encrypted value is "<< base.get_string() << "\n";
+		// std::cout << "Regular value is " << base.subset_sum(T, false).get_string() << "\n";
+		base += adder;
+	}
+}
 
-	// insert your code here
-}
-std::map<Key,std::vector<std::string>> Symbol::runBruteForce(int charLen) {
-	std::map<Key,std::vector<std::string>> finalMap;
- 	//Key k(encrypted);
-    char res[charLen];
-    char add[charLen];
-    char first = 'a';
-    char second = 'b';
-    for(int i = 0; i < charLen ; i++) {
-        res[i] = first;
-        add[i] = first;
-    }
-    Key current(res);
-    add[C - 1] = second;
-    Key adder(add);
-    long long length  = std::pow(32, charLen);
-    int i = 0;
-	//key is an encrypted(subset sum)key and the value at each key is a vector of unencrypted keys
-    while(i < length) {
-		Key k = current.subset_sum(T,false);
-		if(finalMap.count(k) > 0) {
-			finalMap[k].push_back(current.get_string());
-		 } else {
-			std::vector<Key> valueVector;
-			valueVector.push_back(current.get_string());
-		}
-        //finalMap.insert(std::pair<Key, Key>(k, current))
-        current += adder;
-        i++;
-    }
-	return finalMap;
-    
-}
+	// std::map<long long,std::vector<long long>> finalMap;
+	// long long firstIterator = 1LL << (N/2);
+	// long long amountShift = 0;
+	// Key lastKey(encrypted);
+	// for(long long i = 0; i < firstIterator+1; i++) {
+	// 	Key current = longToKey(amountShift);
+	// 	//current.showString();
+	// 	Key encrypt = current.subset_sum(T,false);
+	// 	//encrypted.showString();
+	// 	long long decryptedLong = encrypt.keyToLong();
+	// 	finalMap[decryptedLong].push_back(amountShift);
+	// 	//finalMap[current].push_back(decrypted.get_string());
+	// 	//std::cout<< "firstIterator is " << firstIterator << "\n";
+	// 	//std::cout<< "amountShift is " << amountShift << "\n";
+
+	// 	amountShift += firstIterator;
+	// }
+	// long long ending = lastKey.keyToLong();
+	// long long counter = firstIterator;
+	// if(counter % 2 != 0) {
+	// 	counter++;
+	// }
+	// for(long long i = 0; i < counter; i++)  {
+	// 	Key current = longToKey(i);
+	// 	Key currentSum = current.subset_sum(T,false);
+	// 	long long difference = ending - currentSum.keyToLong();
+	// 	if(difference < 0) {
+	// 		difference += (1LL << N);
+	// 	}
+	// 	std::map<long long,std::vector<long long>>::iterator move = finalMap.find(difference);
+	// 	if(move != finalMap.end()) {
+	// 		for(int j = 0; j < move->second.size(); j++) {
+	// 			//std::cout<< "hi" << "\n";
+	// 			Key x = longToKey(i+move->second[j]);
+	// 			x.showString();
+	// 			Key ending = longToKey(result);
+	// 			ending.showString();
+
+// void Symbol::subtractKeys(long long ending, long long iterator, long long amountShift, std::map<long long,std::vector<long long>> 
+// 	sepMap) {
+// 	long long counter = iterator;
+// 	if(counter % 2 == 0) {
+// 		counter;
+// 	}
+// 	for(long long i = 0; i < counter; i++)  {
+// 		Key current = longToKey(i);
+// 		Key currentSum = current.subset_sum(T,false);
+// 		long long difference = ending - currentSum.keyToLong();
+// 		if(difference < 0) {
+// 			difference += (1LL << N);
+// 		}
+// 		std::map<long long,std::vector<long long>>::iterator move = sepMap.find(difference);
+// 		std::cout<< "hi"  << "\n";
+// 		if(move != sepMap.end()) {
+// 			std::cout<< "hi"  << "\n";
+
+// 			for(int j = 0; j < move->second.size(); j++) {
+// 				Key x = longToKey(i+move->second[j]);
+// 				x.showString();
+// 				//Key ending = longToKey(result);
+// 				//ending.showString();
+// 			}
+// 		}
+
+// 	}
+// }
 //converts individual chars from a string into their bit form stored as a char
 char charToInt(char x) {
 	char returnVal;
@@ -83,8 +120,8 @@ char charToInt(char x) {
 	return returnVal;
 }
 //converts the entire string into bits in long form
-long stringToBits(std::string& encrypted) {
-	long total = 0;
+long long stringToBits(std::string& encrypted) {
+	long long total = 0;
 	char temp;
 	for(int i = 0; i < encrypted.size(); i++) {
 		total = total << C; //or 5 instead of C
@@ -93,6 +130,7 @@ long stringToBits(std::string& encrypted) {
 	}
 	return total;
 }
+
 void usage(const std::string& error_msg="") {
 	if (!error_msg.empty()) std::cout << "ERROR: " << error_msg << '\n';
 	std::cout << me << ": Symbol table-based cracking of Subset-sum password"
@@ -122,12 +160,12 @@ void initialize(int argc, char* argv[]) {
 int main(int argc, char *argv[]){
 	
 	initialize(argc, argv);
+	clock_t start = (double) clock();
 	Symbol s(table_filename);
 	s.decrypt(encrypted);
-	// std::string x = "0";
-	// std::cout << stringToBits(x) << "\n";
-	
-	// insert your code here
+	clock_t end = (double) clock();
+    double time = (double) (end-start)/CLOCKS_PER_SEC;
+	std::cout<< time << std::endl;
 	
 	return 0;
 }

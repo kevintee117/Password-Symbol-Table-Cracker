@@ -42,6 +42,7 @@ void Brute::decrypt(const std::string& encrypted){
     while(i < length) {
         if(current.subset_sum(T, false) == k) {
             current.showString();
+            
         }
         current += adder;
         i++;
@@ -83,6 +84,9 @@ int main(int argc, char *argv[]){
 	initialize(argc, argv);
 	Brute b = Brute(table_filename);
 	b.decrypt(encrypted);
+    // std::string x = "hello";
+	// Key k(x);
+	// std::cout << k.get_string() << "\n";
 
 
 	
