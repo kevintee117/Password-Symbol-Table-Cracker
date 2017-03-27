@@ -46,16 +46,19 @@ void Symbol::decrypt(const std::string& encrypted) {
 	for(int i = 0; i < numIterations; i++) {
 		Key encrypt = base.subset_sum(T,false);
 		//std::cout << "encrypted is " << encrypt.get_string() << "\n";
-		auto ita = mainMap.find(encrypt); // tag
-		if(ita != mainMap.end()) {
-			// mainMap[encrypt].push_back(base.get_string());
-			ita->second.push_back(base.get_string());
+		//auto ita = mainMap.find(encrypt); // tag
+		//if(ita != mainMap.end()) {
+		if(mainMap.count(encrypt) >0 ){
+			mainMap[encrypt].push_back(base.get_string());
+			//ita->second.push_back(base.get_string());
+			base.showString();
 		} else {
 			std::vector<std::string> mapVector;
 			mapVector.push_back(base.get_string());
-			std::pair<Key, std::vector<std::string>> pa(base, mapVector);
-			mainMap.insert(pa);
-			//mainMap[encrypt] = mapVector;
+			//std::pair<Key, std::vector<std::string>> pa(base, mapVector);
+			//mainMap.insert(pa);
+			//base.showString();
+			mainMap[encrypt] = mapVector;
 		}
 		//mainMap[encrypt] = base;
 		  //std::cout << "encrypted value is "<< base.get_string() << "\n";
@@ -75,8 +78,9 @@ void Symbol::decrypt(const std::string& encrypted) {
 	// auto ip = mainMap.begin();
 	// while(ip != mainMap.end()) {
 	// 	for(int i = 0; i < ip->second.size(); i++) {
-	// 		std::cout << ip->second[i] <<"\n";
+	// 		std::cout << ip->second[i].get_string() <<"\n";
 	// 	}
+		
 	// 	ip++;
 	// }
 	std::string addTwo = main;
@@ -97,6 +101,7 @@ void Symbol::decrypt(const std::string& encrypted) {
 
 	//baseTwo.showString();
 	Key a2d(addTwo);
+
 	//std::cout << "a2d is " << a2d.get_string() << "\n"; 
 	for(int j = 0; j < numIterationsTwo; j++) {
 		//baseTwo.showString();
@@ -106,28 +111,25 @@ void Symbol::decrypt(const std::string& encrypted) {
 		originalMod = original;
 		//originalMod.showString();
 		//std::cout << "a2d is " << a2d.get_string() << "\n"; 
-		// Key encrypt = baseTwo.subset_sum(T, false);
-		originalMod -= baseTwo.subset_sum(T, false);
+		Key encrypt = baseTwo.subset_sum(T, false);
 		//std::cout << "Base is " << baseTwo.get_string() << "\n";
 		// originalMod -= baseTwo;
-		// originalMod -= encrypt;
-
+		 originalMod -= encrypt;
 		//std::cout << "target is " << originalMod.get_string() << "\n";
-
+		//auto ipa = mainMap.begin();
+		//ipa->first.showString();
 		auto it = mainMap.find(originalMod);
-		//it->first.showString();
+
+		//std::cout <<"key is " << it->first.get_string() << "\n";
 		//it->second.showString();
 		//mainMap[originalMod].showString();
 		if(it != mainMap.end()) {
-			std::cout << "hit" << "\n";
-			//it->second.showString();
+			//std::cout << "hit" << "\n";
+			// it->first.showString();
 			for(int k = 0; k < it->second.size(); k++ ) {
-				// originalMod.set_string(it->second[k]); 
-				// originalMod += baseTwo;
-				// originalMod.showString();
-				std::string firstHalf = it->second[k].substr(0,half);
-				std::string secondHalf = baseTwo.get_string().substr(half);
-				std::cout << firstHalf + secondHalf << "\n";
+				originalMod.set_string(it->second[k]); 
+				originalMod += baseTwo;
+				originalMod.showString();
 			}
 		}
 	//baseTwo.showString();
@@ -136,95 +138,6 @@ void Symbol::decrypt(const std::string& encrypted) {
 
 
 }
-
-	// std::map<long long,std::vector<long long>> finalMap;
-	// long long firstIterator = 1LL << (N/2);
-	// long long amountShift = 0;
-	// Key lastKey(encrypted);
-	// for(long long i = 0; i < firstIterator+1; i++) {
-	// 	Key current = longToKey(amountShift);
-	// 	//current.showString();
-	// 	Key encrypt = current.subset_sum(T,false);
-	// 	//encrypted.showString();
-	// 	long long decryptedLong = encrypt.keyToLong();
-	// 	finalMap[decryptedLong].push_back(amountShift);
-	// 	//finalMap[current].push_back(decrypted.get_string());
-	// 	//std::cout<< "firstIterator is " << firstIterator << "\n";
-	// 	//std::cout<< "amountShift is " << amountShift << "\n";
-
-	// 	amountShift += firstIterator;
-	// }
-	// long long ending = lastKey.keyToLong();
-	// long long counter = firstIterator;
-	// if(counter % 2 != 0) {
-	// 	counter++;
-	// }
-	// for(long long i = 0; i < counter; i++)  {
-	// 	Key current = longToKey(i);
-	// 	Key currentSum = current.subset_sum(T,false);
-	// 	long long difference = ending - currentSum.keyToLong();
-	// 	if(difference < 0) {
-	// 		difference += (1LL << N);
-	// 	}
-	// 	std::map<long long,std::vector<long long>>::iterator move = finalMap.find(difference);
-	// 	if(move != finalMap.end()) {
-	// 		for(int j = 0; j < move->second.size(); j++) {
-	// 			//std::cout<< "hi" << "\n";
-	// 			Key x = longToKey(i+move->second[j]);
-	// 			x.showString();
-	// 			Key ending = longToKey(result);
-	// 			ending.showString();
-
-// void Symbol::subtractKeys(long long ending, long long iterator, long long amountShift, std::map<long long,std::vector<long long>> 
-// 	sepMap) {
-// 	long long counter = iterator;
-// 	if(counter % 2 == 0) {
-// 		counter;
-// 	}
-// 	for(long long i = 0; i < counter; i++)  {
-// 		Key current = longToKey(i);
-// 		Key currentSum = current.subset_sum(T,false);
-// 		long long difference = ending - currentSum.keyToLong();
-// 		if(difference < 0) {
-// 			difference += (1LL << N);
-// 		}
-// 		std::map<long long,std::vector<long long>>::iterator move = sepMap.find(difference);
-// 		std::cout<< "hi"  << "\n";
-// 		if(move != sepMap.end()) {
-// 			std::cout<< "hi"  << "\n";
-
-// 			for(int j = 0; j < move->second.size(); j++) {
-// 				Key x = longToKey(i+move->second[j]);
-// 				x.showString();
-// 				//Key ending = longToKey(result);
-// 				//ending.showString();
-// 			}
-// 		}
-
-// 	}
-// }
-//converts individual chars from a string into their bit form stored as a char
-char charToInt(char x) {
-	char returnVal;
-	if( x <= 'a') {
-		returnVal = x - 'a'; 
-	} else {
-		returnVal = x - '0' + 26;
-	}
-	return returnVal;
-}
-//converts the entire string into bits in long form
-long long stringToBits(std::string& encrypted) {
-	long long total = 0;
-	char temp;
-	for(int i = 0; i < encrypted.size(); i++) {
-		total = total << C; //or 5 instead of C
-		temp = charToInt(encrypted[i]);
-		total += temp;
-	}
-	return total;
-}
-
 void usage(const std::string& error_msg="") {
 	if (!error_msg.empty()) std::cout << "ERROR: " << error_msg << '\n';
 	std::cout << me << ": Symbol table-based cracking of Subset-sum password"
@@ -255,8 +168,8 @@ int main(int argc, char *argv[]){
 	
 	initialize(argc, argv);
 	clock_t start = (double) clock();
-	Symbol *s = new Symbol(table_filename);
-	s->decrypt(encrypted);
+	Symbol s(table_filename);
+	s.decrypt(encrypted);
 	clock_t end = (double) clock();
     double time = (double) (end-start)/CLOCKS_PER_SEC;
 	std::cout<<"Symbol Table took "<< time << " seconds"<< std::endl;
