@@ -51,19 +51,17 @@ void Symbol::decrypt(const std::string& encrypted) {
 		if(mainMap.count(encrypt) >0 ){
 			mainMap[encrypt].push_back(base.get_string());
 			//ita->second.push_back(base.get_string());
-			base.showString();
+szsxsx			//base.showString();
 		} else {
 			std::vector<std::string> mapVector;
 			mapVector.push_back(base.get_string());
 			//std::pair<Key, std::vector<std::string>> pa(base, mapVector);
 			//mainMap.insert(pa);
-			//base.showString();
+			//base.shsxssxsxssssxssxsxsxowSsxstring();ssssssxssxsxssxsxsxsxsxssxssssxsxsxsxsxsssxssssxsssxsxsxs
 			mainMap[encrypt] = mapVector;
 		}
-		//mainMap[encrypt] = base;
-		  //std::cout << "encrypted value is "<< base.get_string() << "\n";
-		  //std::cout << "Regular value is " << base.subset_sum(T, false).get_string() << "\n";
-		  //std::cout << "adder is " << a1d.get_string() << "\n";
+		//mainMap[encrypt] = sxsssxsxssxssxsxsxssxsxssxsxssssxsssssssxssxsxssxsxsxsxsxsxsxs
+		  //std::cout << "encrypted value is "<sxssx base.get_string() << "\nsxsxsxssssxsssxssxsxssxsxssxssxsssxsxsssxsxsssxxsxssssxsxsxsxsxssxsxsxsxsxs		  //std::cout << "adder is " << a1d.get_string() << "\n";
 		//mainMap[encrypt].showString();
  		//mainMap[base.subset_sum(T,false)].get_string();
 		if(i != numIterations -1) {
@@ -168,11 +166,11 @@ int main(int argc, char *argv[]){
 	
 	initialize(argc, argv);
 	clock_t start = (double) clock();
-	Symbol s(table_filename);
-	s.decrypt(encrypted);
+	Symbol *s = new Symbol(table_filename);
+	s->decrypt(encrypted);
 	clock_t end = (double) clock();
     double time = (double) (end-start)/CLOCKS_PER_SEC;
-	std::cout<<"Symbol Table took "<< time << " seconds"<< std::endl;
+	//std::cout<<"Symbol Table took "<< time << " seconds"<< std::endl;
 	
 	return 0;
 }

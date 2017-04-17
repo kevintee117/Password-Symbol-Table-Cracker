@@ -49,7 +49,7 @@ void Brute::decrypt(const std::string& encrypted){
     }
     clock_t end = (double) clock();
     double time = (double) (end-start)/CLOCKS_PER_SEC;
-    std::cout<< time << std::endl;
+   // std::cout<< time << std::endl;
 }
 
 void usage(const std::string& error_msg="") {
