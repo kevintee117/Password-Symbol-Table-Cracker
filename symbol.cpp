@@ -51,7 +51,7 @@ void Symbol::decrypt(const std::string& encrypted) {
 		if(mainMap.count(encrypt) >0 ){
 			mainMap[encrypt].push_back(base.get_string());
 			//ita->second.push_back(base.get_string());
-szsxsx			//base.showString();
+		//base.showString();
 		} else {
 			std::vector<std::string> mapVector;
 			mapVector.push_back(base.get_string());
