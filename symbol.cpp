@@ -27,7 +27,7 @@ Symbol::Symbol(const std::string& filename) {
 }
 
 void Symbol::decrypt(const std::string& encrypted) {
-	//std::map<Key, Key> mainMap;
+//crete a map for a key and its associated strings
 	std::map<Key, std::vector<std::string>> mainMap;
 	std::string main(C,'a');
 	std::string adder = main;
@@ -55,15 +55,8 @@ void Symbol::decrypt(const std::string& encrypted) {
 		} else {
 			std::vector<std::string> mapVector;
 			mapVector.push_back(base.get_string());
-			//std::pair<Key, std::vector<std::string>> pa(base, mapVector);
-			//mainMap.insert(pa);
-			//base.shsxssxsxssssxssxsxsxowSsxstring();ssssssxssxsxssxsxsxsxsxssxssssxsxsxsxsxsssxssssxsssxsxsxs
 			mainMap[encrypt] = mapVector;
 		}
-		//mainMap[encrypt] = sxsssxsxssxssxsxsxssxsxssxsxssssxsssssssxssxsxssxsxsxsxsxsxsxs
-		  //std::cout << "encrypted value is "<sxssx base.get_string() << "\nsxsxsxssssxsssxssxsxssxsxssxssxsssxsxsssxsxsssxxsxssssxsxsxsxsxssxsxsxsxsxs		  //std::cout << "adder is " << a1d.get_string() << "\n";
-		//mainMap[encrypt].showString();
- 		//mainMap[base.subset_sum(T,false)].get_string();
 		if(i != numIterations -1) {
 			base += a1d;
 		}
